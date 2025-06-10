@@ -43,9 +43,15 @@
                     array_push($remainingResults, $row['comments']);
                 }
 
+                //Check to see if the customer left a comment containing an expected shipping date. 
+                //We want to grab that, parse it out, and update our row with the date for the related column.
                 if (str_contains($row['comments'], $keyPhrase)) {
+                    //Find where our magic string is, and preserve that location.
                     $startingPoint = strpos($row['comments'], $keyPhrase);
+                    //Get our date Substring based on the index we found above, and then the length of our hey phrase.
                     $dateString = substr($row['comments'], $startingPoint + strlen($keyPhrase));
+
+                    //Make our update statement and set the shipping date to our nice date string where order ids match.
                     $sql = "UPDATE sweetwater_test SET shipdate_expected = '$dateString' WHERE orderid = '$row[orderid]'";
                     $conn->query($sql);
                 }
@@ -68,11 +74,6 @@
                     echo $value . "<br>\n<br>\n";
                 }
                 echo "<br>\n<br>\n";
-            }
-
-            function updateShippingDate($orderID, $dateString)
-            {
-
             }
             ?>
         </ul>
