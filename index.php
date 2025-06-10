@@ -69,9 +69,9 @@
             //Function to echo all our values from our arrays without taking up so much space.
             function echoArrayValues($array, $title)
             {
-                echo "Comments About ", $title, "!<br>\n<br>\n";
+                echo "<h3>Comments About ", $title, "!</h3><br>\n<br>\n";
                 foreach ($array as $key => $value) {
-                    echo $value . "<br>\n<br>\n";
+                    echo "<li>". $value . "</li><br>\n";
                 }
                 echo "<br>\n<br>\n";
             }
