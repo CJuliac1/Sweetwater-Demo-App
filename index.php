@@ -57,7 +57,7 @@
                 }
             }
 
-            //Echos for each array of results.
+            //Echos for each array of results, with an appropriate title for the grouping.
             echoArrayValues($candyResults, "Candy");
             echoArrayValues($callBackResults, "Calls");
             echoArrayValues($referralResults, "Referrals");
@@ -66,12 +66,12 @@
 
             $conn->close();
 
-            //Function to echo all our values from our arrays without taking up so much space.
+            //Function to echo all our values into groups based on their title.
             function echoArrayValues($array, $title)
             {
-                echo "Comments About ", $title, "!<br>\n<br>\n";
+                echo "<h3>" . "Comments About ", $title, "!</h3>\n<br>\n";
                 foreach ($array as $key => $value) {
-                    echo $value . "<br>\n<br>\n";
+                    echo "<li>". $value . "</li><br>\n\n";
                 }
                 echo "<br>\n<br>\n";
             }
