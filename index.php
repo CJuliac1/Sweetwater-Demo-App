@@ -41,6 +41,12 @@
                 } else {
                     array_push($remainingResults, $row['comments']);
                 }
+
+                if(str_contains($row['comments'],'Expected Ship Date')) {
+                    $keyPhrase = 'Expected Ship Date: ';
+                    $startingPoint= strpos($row['comments'],$keyPhrase);
+                    $dateString = substr($row['comments'], $startingPoint+strlen($keyPhrase));
+                }
             }
 
             //Echos for each array of results.
