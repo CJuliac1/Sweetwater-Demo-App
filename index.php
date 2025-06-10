@@ -49,15 +49,15 @@
                     //Find where our magic string is, and preserve that location.
                     $startingPoint = strpos($row['comments'], $keyPhrase);
                     //Get our date Substring based on the index we found above, and then the length of our hey phrase.
-                    $dateString = substr($row['comments'], $startingPoint + strlen($keyPhrase));
-
+                    $dateString = strtotime(substr($row['comments'], $startingPoint + strlen($keyPhrase)));
+                    $formattedDate = date('Y-m-d', $dateString);
                     //Make our update statement and set the shipping date to our nice date string where order ids match.
-                    $sql = "UPDATE sweetwater_test SET shipdate_expected = '$dateString' WHERE orderid = '$row[orderid]'";
+                    $sql = "UPDATE sweetwater_test SET shipdate_expected = '$formattedDate' WHERE orderid = '$row[orderid]'";
                     $conn->query($sql);
                 }
             }
 
-            //Echos for each array of results, with an appropriate title for the grouping.
+            //Echos for each array of results.
             echoArrayValues($candyResults, "Candy");
             echoArrayValues($callBackResults, "Calls");
             echoArrayValues($referralResults, "Referrals");
@@ -66,15 +66,16 @@
 
             $conn->close();
 
-            //Function to echo all our values into groups based on their title.
+            //Function to echo all our values from our arrays without taking up so much space.
             function echoArrayValues($array, $title)
             {
-                echo "<h3>" . "Comments About ", $title, "!</h3>\n<br>\n";
+                echo "Comments About ", $title, "!<br>\n<br>\n";
                 foreach ($array as $key => $value) {
-                    echo "<li>". $value . "</li><br>\n\n";
+                    echo $value . "<br>\n<br>\n";
                 }
                 echo "<br>\n<br>\n";
             }
+
             ?>
         </ul>
     </div>
