@@ -14,33 +14,63 @@
             // Establish connection.
             $conn = new mysqli("localhost", "root", "", "sweetwaterdemo");
 
-            //Original result for grabbing all rows, might need later.
-            // $result = $conn->query("SELECT * FROM sweetwater_test");
+            //Grab all our rows off our table for parsing.
+            $result = $conn->query("SELECT * FROM sweetwater_test");
 
-            //Super gross super basic query per area of concern IE candy, callbacks, referrals etc.
-            $candyComments = $conn->query(query:"SELECT * from sweetwater_test where comments like '%candy%'");
-            $callBackComments = $conn->query(query:"SELECT * from sweetwater_test where comments like '%call me%' or comments like '%dont call me%' or comments like '%do not call me%'");
-            $referralComments = $conn->query(query:"SELECT * from sweetwater_test where comments like '%referral%' or comments like '%referred%'");
-            $signatureComments = $conn->query(query:"SELECT * from sweetwater_test where comments like '%signature%'");
-            //Equally simple and choppy while loops to itterate over our results and slap em ina  big gross list for now.
-            while ($row = $candyComments->fetch_assoc()){
-                echo "<li>" . $row['comments'];
+            //Some empty arrays for each type of comment we want
+            $candyResults = [];
+            $callBackResults = [];
+            $referralResults =[];
+            $signatureResults = [];
+            $remainingResults =[];
+            
+            //While Loop to do some checks for values within the comments column of each row.
+        while ($row = $result->fetch_assoc()) {
+            if(str_contains($row['comments'], 'candy')){
+                array_push($candyResults, $row['comments']);
+            }elseif(str_contains( $row['comments'], 'call me')){
+                array_push($callBackResults, $row['comments']);
+            }elseif(str_contains( $row['comments'], 'dont call me')){
+                array_push($callBackResults, $row['comments']);
+            }elseif(str_contains( $row['comments'], 'referred')){
+                array_push($referralResults, $row['comments']);
+            }elseif(str_contains( $row['comments'], 'signature')){
+                array_push($signatureResults, $row['comments']);
+            }else{
+                array_push($remainingResults, $row['comments']);
             }
-            while($row = $callBackComments->fetch_assoc()){
-                echo "<li>". $row['comments'];
-            }
-            while($row = $referralComments->fetch_assoc()){
-                echo "<li>". $row['comments'];
-            }
-            while($row = $signatureComments->fetch_assoc()){
-                echo "<li>". $row['comments'];
-            }
+        }
 
-            //Old result to print all id's to test
-            // while ($row = $result->fetch_assoc()) {
-            //     echo "<li>" . $row['orderid'];
-            // }
+        //Echos for each array of results.
+        echo "Comments Containing Candy!<br>\n<br>\n";
+        foreach ($candyResults as $key => $value){
+            echo $value."<br>\n<br>\n";
+        }
+        echo "<br>\n<br>\n";
 
+        echo "Comments Concerning Calls!<br>\n<br>\n";
+        foreach ($callBackResults as $key => $value){
+            echo $value."<br>\n<br>\n";
+        }
+        echo "<br>\n<br>\n";
+
+        echo "Comments Regarding Referrals!<br>\n<br>\n";
+        foreach ($referralResults as $key => $value){
+            echo $value."<br>\n<br>\n";
+        }
+        echo "<br>\n<br>\n";
+
+        echo "Comments Soliciting Signatures!<br>\n<br>\n";
+        foreach ($signatureResults as $key => $value){
+            echo $value."<br>\n<br>\n";
+        }
+        echo "<br>\n<br>\n";
+
+        echo "All Other Comments!";
+        foreach ($remainingResults as $key => $value){
+            echo $value."<br>\n<br>\n";
+        }
+        echo "<br>\n<br>\n";
             $conn->close();
             ?>
         </ul>
