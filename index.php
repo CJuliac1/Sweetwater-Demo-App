@@ -13,11 +13,15 @@
             <?php
             // Retrieve all comments just to make sure we can 
             $conn = new mysqli("localhost", "root", "", "sweetwaterdemo");
-            $result = $conn->query("SELECT * FROM sweetwater_test");
+            // $result = $conn->query("SELECT * FROM sweetwater_test");
+            $candyComments = $conn->query(query:"SELECT * from sweetwater_test where comments like '%candy%'");
 
-            while ($row = $result->fetch_assoc()) {
-                echo "<li>" . $row['orderid'];
+            while ($row = $candyComments->fetch_assoc()){
+                echo "<li>" . $row['comments'];
             }
+            // while ($row = $result->fetch_assoc()) {
+            //     echo "<li>" . $row['orderid'];
+            // }
 
             $conn->close();
             ?>
