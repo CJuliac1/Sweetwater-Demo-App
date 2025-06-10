@@ -25,6 +25,7 @@
             $referralResults = [];
             $signatureResults = [];
             $remainingResults = [];
+            $keyPhrase = 'Expected Ship Date: ';
 
             //While Loop to do some checks for values within the comments column of each row.
             while ($row = $result->fetch_assoc()) {
@@ -42,10 +43,11 @@
                     array_push($remainingResults, $row['comments']);
                 }
 
-                if(str_contains($row['comments'],'Expected Ship Date')) {
-                    $keyPhrase = 'Expected Ship Date: ';
-                    $startingPoint= strpos($row['comments'],$keyPhrase);
-                    $dateString = substr($row['comments'], $startingPoint+strlen($keyPhrase));
+                if (str_contains($row['comments'], $keyPhrase)) {
+                    $startingPoint = strpos($row['comments'], $keyPhrase);
+                    $dateString = substr($row['comments'], $startingPoint + strlen($keyPhrase));
+                    $sql = "UPDATE sweetwater_test SET shipdate_expected = '$dateString' WHERE orderid = '$row[orderid]'";
+                    $conn->query($sql);
                 }
             }
 
@@ -55,7 +57,7 @@
             echoArrayValues($referralResults, "Referrals");
             echoArrayValues($signatureResults, "Signatures");
             echoArrayValues($remainingResults, "Everything Else");
-            
+
             $conn->close();
 
             //Function to echo all our values from our arrays without taking up so much space.
@@ -66,6 +68,11 @@
                     echo $value . "<br>\n<br>\n";
                 }
                 echo "<br>\n<br>\n";
+            }
+
+            function updateShippingDate($orderID, $dateString)
+            {
+
             }
             ?>
         </ul>
