@@ -11,16 +11,30 @@
 <body>
     <div class="container">
         <h1>Sweetwater PHP Demo App</h1>
+
         <form action="update_dates.php" method="POST">
             <button type="submit">Update Shipping Dates</button>
         </form>
         <ul>
             <?php
+
+            //Set the amount of results we want to process into our comment sections.
+            $numResults = 50;
+
+            //Get our starting row.
+            $startRow = setStartingRow();
+
             //Establish connection.
             $conn = new mysqli("localhost", "root", "", "sweetwaterdemo");
 
             //Grab all our rows off our table for parsing.
-            $result = $conn->query("SELECT * FROM sweetwater_test");
+            $result = $conn->query("SELECT * FROM sweetwater_test LIMIT $startRow, $numResults");
+
+            //Get our total number of rows, so we dont allow nav past that point
+            $rowCount = mysqli_num_rows($result);
+
+            //Create our pagination elements using rowCount to control buttons.
+            createPagination($startRow, $numResults, $rowCount);
 
             //Names for the sections we want to build.
             $sectionNames = array("Candy", "Calls", "Referrals", "Signatures", "Everything Else");
@@ -39,11 +53,13 @@
             //Function to echo all our values from our arrays without taking up so much space.
             function echoArrayValues($array, $title)
             {
-                echo "<h3>Comments About ", $title, "!</h3><br>\n<br>\n";
-                foreach ($array as $key => $value) {
-                    echo "<li>" . $value . "</li><br>\n";
+                //Only print sections if the array has values.
+                if (count($array) > 0) {
+                    echo "<h3>Comments About ", $title, "!</h3>";
+                    foreach ($array as $key => $value) {
+                        echo "<tr><li>" . $value . "</li></tr>";
+                    }
                 }
-                echo "<br>\n<br>\n";
             }
 
             //Function to take all our comment data and turn them into processed bins. 
@@ -87,6 +103,43 @@
                     }
                 }
                 return false;
+            }
+
+            function createPagination($startRow, $numResults, $rowCount)
+            {
+                //Create a div for our buttons. 
+                echo '<div class="pagination">';
+
+                //Link to increment our results by a given amount. Dont show if rowCount less than numResults
+                if ($rowCount === $numResults) {
+                    echo '<a href="' . $_SERVER['PHP_SELF'] . '?startRow=' . ($startRow + $numResults) . '">Next ' . $numResults . '</a>';
+                }
+                //Our new previous value is the starting position - the number of results.
+                $prev = $startRow - $numResults;
+                
+                //only print a "Previous" link if a "Next" was clicked
+                if ($prev >= 0) {
+                    echo '<a href="' . $_SERVER['PHP_SELF'] . '?startRow=' . $prev . '">Previous ' . $numResults . '</a>';
+                }
+
+                //Close the div.
+                echo '</div>';
+            }
+
+            //Function for setting the starting row based on the super global.
+            function setStartingRow(): int
+            {
+                //Track our starting row from our dataset.
+                if (!isset($_GET['startRow']) or !is_numeric($_GET['startRow'])) {
+
+                    //Set to a default case of 0
+                    $start = 0;
+
+                    //Otherwise we take the value from the super global
+                } else {
+                    $start = (int) $_GET['startRow'];
+                }
+                return $start;
             }
             ?>
         </ul>
