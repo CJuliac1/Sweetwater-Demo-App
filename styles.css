@@ -19,8 +19,35 @@ h1 {
     text-align: center;
 }
 
-h3{
+h3 {
     text-align: left;
+}
+
+form {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 20px;
+}
+
+form input {
+    flex: 1;
+    padding: 10px;
+    margin-right: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+form button {
+    padding: 10px 20px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+form button:hover {
+    background-color: #218838;
 }
 
 ul {

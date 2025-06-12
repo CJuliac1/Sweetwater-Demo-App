@@ -11,9 +11,12 @@
 <body>
     <div class="container">
         <h1>Sweetwater PHP Demo App</h1>
+        <form action="update_dates.php" method="POST">
+            <button type="submit">Update Shipping Dates</button>
+        </form>
         <ul>
             <?php
-            // Establish connection.
+            //Establish connection.
             $conn = new mysqli("localhost", "root", "", "sweetwaterdemo");
 
             //Grab all our rows off our table for parsing.
@@ -42,19 +45,6 @@
                 } else {
                     array_push($remainingResults, $row['comments']);
                 }
-
-                //Check to see if the customer left a comment containing an expected shipping date. 
-                //We want to grab that, parse it out, and update our row with the date for the related column.
-                if (str_contains($row['comments'], $keyPhrase)) {
-                    //Find where our magic string is, and preserve that location.
-                    $startingPoint = strpos($row['comments'], $keyPhrase);
-                    //Get our date Substring based on the index we found above, and then the length of our hey phrase.
-                    $dateString = strtotime(substr($row['comments'], $startingPoint + strlen($keyPhrase)));
-                    $formattedDate = date('Y-m-d', $dateString);
-                    //Make our update statement and set the shipping date to our nice date string where order ids match.
-                    $sql = "UPDATE sweetwater_test SET shipdate_expected = '$formattedDate' WHERE orderid = '$row[orderid]'";
-                    $conn->query($sql);
-                }
             }
 
             //Echos for each array of results.
@@ -71,7 +61,7 @@
             {
                 echo "<h3>Comments About ", $title, "!</h3><br>\n<br>\n";
                 foreach ($array as $key => $value) {
-                    echo "<li>". $value . "</li><br>\n";
+                    echo "<li>" . $value . "</li><br>\n";
                 }
                 echo "<br>\n<br>\n";
             }
